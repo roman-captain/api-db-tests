@@ -6,10 +6,10 @@ Pattern: call the API → verify the response → check the database record.
 
 ## Stack
 
-- **Playwright Test** — test runner + API requests
-- **PostgreSQL** (`pg`) — database assertions
-- **Allure** — test reporting
-- **GitHub Actions** — CI with `services: postgres`
+- **Playwright Test** - test runner + API requests
+- **PostgreSQL** (`pg`) - database assertions
+- **Allure** - test reporting
+- **GitHub Actions** - CI with `services: postgres`
 - **TypeScript**
 
 ## Project structure
@@ -34,14 +34,8 @@ api-db-tests/
 # 1. Install dependencies
 npm ci
 
-# 2. Start PostgreSQL
-docker run -d \
-  --name pg-test \
-  -e POSTGRES_USER=test \
-  -e POSTGRES_PASSWORD=test \
-  -e POSTGRES_DB=testdb \
-  -p 5432:5432 \
-  postgres:15
+# 2. Start PostgreSQL via Docker Compose
+docker compose up -d
 
 # 3. Create .env and fill in values (see .env.example)
 cp .env.example .env
@@ -52,6 +46,9 @@ npm run db:seed
 # 5. Run tests
 npm test
 npm run test:api   # @api tag only
+
+# 6. Stop PostgreSQL when done
+docker compose down
 ```
 
 ## Reports
@@ -64,7 +61,7 @@ npm run report:generate  # generate only
 ## CI
 
 Triggers: push/PR to `main`, `workflow_dispatch`.
-PostgreSQL is provided by GitHub Actions `services: postgres` — no extra setup needed.
+PostgreSQL is provided by GitHub Actions `services: postgres` - no extra setup needed.
 Required secrets: none.
 
 ## Test scenarios
@@ -79,4 +76,4 @@ Required secrets: none.
 
 ## Notes
 
-`DbHelper` on a real project contains only read methods (`SELECT`). The application writes to the database — AQA only verifies. The write methods here (`savePet`, `updatePet`, `markDeleted`) exist because Petstore is a shared public API without DB access.
+`DbHelper` on a real project contains only read methods (`SELECT`). The application writes to the database - AQA only verifies. The write methods here (`savePet`, `updatePet`, `markDeleted`) exist because Petstore is a shared public API without DB access.
