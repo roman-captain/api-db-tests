@@ -6,6 +6,7 @@
     "test": "playwright test",
     "test:api": "playwright test --grep @api",
     "db:seed": "node db/seed.js",
+    "db:reset": "node db/reset.js",
     "report": "allure generate allure-results --clean -o allure-report && allure open allure-report",
     "report:generate": "allure generate allure-results --clean -o allure-report"
   },

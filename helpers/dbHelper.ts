@@ -16,7 +16,6 @@ export class DbHelper {
     await this.client.end();
   }
 
-  // ── ЭТО РАБОТА AQA — только читаем и проверяем ──────────────────────
 
   async getPetById(id: number) {
     const result = await this.client.query(
@@ -42,9 +41,6 @@ export class DbHelper {
     return result.rows[0]?.deleted_at !== null;
   }
 
-  // ── ЭТО КОСТЫЛЬ ДЛЯ ОБУЧЕНИЯ — на реальном проекте этого нет ────────
-  // На реальном проекте приложение само пишет в базу.
-  // Здесь мы пишем сами потому что Petstore — чужой API без доступа к его DB.
 
   async savePet(id: number, name: string, status: string) {
     await this.client.query(

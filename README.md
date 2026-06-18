@@ -19,12 +19,26 @@ api-db-tests/
 ├── config/env.ts
 ├── db/
 │   ├── schema.sql
-│   └── seed.js
+│   ├── seed.js
+│   └── reset.js
 ├── helpers/dbHelper.ts
-├── tests/specs/pets.spec.ts
+├── tests/
+│   ├── global-setup.ts
+│   └── specs/pets.spec.ts
 ├── .github/workflows/tests.yml
 └── playwright.config.ts
 ```
+
+## Test data strategy
+
+Fixed test records with known IDs are seeded before every run via `globalSetup`. This guarantees a predictable baseline — tests reference specific IDs rather than relying on dynamic state.
+
+Two scripts manage test data:
+
+- `db:seed` — creates schema + inserts fixed records (safe to re-run, uses `ON CONFLICT DO UPDATE`)
+- `db:reset` — `TRUNCATE` + re-insert; used in CI before regression runs to ensure a clean slate
+
+`globalSetup` runs `reset` automatically before the test suite starts. No manual intervention needed.
 
 ## Local setup
 
@@ -40,14 +54,15 @@ docker compose up -d
 # 3. Create .env and fill in values (see .env.example)
 cp .env.example .env
 
-# 4. Apply DB schema
-npm run db:seed
-
-# 5. Run tests
+# 4. Run tests (global-setup resets DB automatically)
 npm test
 npm run test:api   # @api tag only
 
-# 6. Stop PostgreSQL when done
+# Manual DB control
+npm run db:seed    # seed without truncate
+npm run db:reset   # truncate + re-seed
+
+# 5. Stop PostgreSQL when done
 docker compose down
 ```
 
